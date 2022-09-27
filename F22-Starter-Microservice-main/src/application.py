@@ -38,5 +38,5 @@ def get_student_by_uni(uni):
     return rsp
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5011)
+    app.run(host="127.0.0.1", port=5011)
 
