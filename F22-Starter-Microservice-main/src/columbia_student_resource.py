@@ -1,9 +1,11 @@
 import pymysql
 import os
+from smartyaddress.smarty_street import SmartyAddressAdaptor
+import json
 
 class ColumbiaStudentResource:
 
-    def __int__(self):
+    def __init__(self):
         pass
 
     @staticmethod
@@ -25,11 +27,59 @@ class ColumbiaStudentResource:
     @staticmethod
     def get_by_key(key):
 
-        sql = "SELECT * FROM f22_databases.columbia_student where uni=%s";
+        sql = "SELECT * FROM User_address.columbia_student where uni=%s";
         conn = ColumbiaStudentResource._get_connection()
         cur = conn.cursor()
         res = cur.execute(sql, args=key)
+        if res != 1:
+            return "Cannot find Uni"
         result = cur.fetchone()
 
         return result
+
+    @staticmethod
+    def get_by_address(key):
+
+        sql = "SELECT * FROM User_address.columbia_student where address_line1 is null and uni=%s";
+        conn = ColumbiaStudentResource._get_connection()
+        cur = conn.cursor()
+        res = cur.execute(sql, args=key)
+        if res != 1:
+            return 0 #if no address
+        result = cur.fetchone()
+
+        return result
+
+    @staticmethod
+    def update_by_template(uni, new_resource):
+        # print(new_resource)
+        sm = SmartyAddressAdaptor()
+        res = sm.do_search(new_resource)
+        # print("res= ", res)
+        if not res:
+            return "Invalid Address"
+        # print("res= ", res)
+        sql = "update User_address.columbia_student set address_line1=%s, address_line2=%s, city=%s, state=%s where uni=%s"
+        conn = ColumbiaStudentResource._get_connection()
+        cur = conn.cursor()
+        res = cur.execute(sql, (new_resource['street1'], new_resource['street2'], new_resource['city'], new_resource['state'], uni))
+        if res != 0:
+            return 1
+
+
+        return 0
+
+# if __name__ == "__main__":
+#     svc = ColumbiaStudentResource()
+#     q = {
+#         "city": "New York",
+#         "state": "NY",
+#         "street1": "30 Morningside Drive",
+#         "street2": ""
+#     }
+#     res = svc.update_by_template('dff9', q)
+#     print('res= ', json.dumps(res, default=str))
+
+
+
 

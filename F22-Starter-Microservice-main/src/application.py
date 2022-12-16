@@ -40,20 +40,25 @@ def get_student_by_uni(uni):
     return rsp
 
 
+@app.route("/api/students/address/<uni>", methods=["PUT"])
+def update_student_address(uni):
+    request_inputs = rest_utils.RESTContext(request)
+    svc = ColumbiaStudentResource()
+    result = svc.update_by_template(uni, request_inputs.data)
+
+    if result:
+        rsp = Response(json.dumps(result), status=200, content_type="application.json")
+    else:
+        rsp = Response("NOT FOUND", status=404, content_type="text/plain")
+
+    return rsp
+
+
 @app.route("/api/circuits/<name>", methods=["GET", "PUT", "DELETE"])
 def get_circuit_by_country(name):
 
     request_inputs = rest_utils.RESTContext(request)
     svc = Formula1Resource()
-
-    # result = Formula1Resource.get_by_key(country)
-    #
-    # if result:
-    #     rsp = Response(json.dumps(result), status=200, content_type="application.json")
-    # else:
-    #     rsp = Response("NOT FOUND", status=404, content_type="text/plain")
-    #
-    # return rsp
 
     if request_inputs.method == "GET":
         result = svc.get_by_key(name)
@@ -63,7 +68,6 @@ def get_circuit_by_country(name):
             rsp = Response("NOT FOUND", status=404, content_type="text/plain")
     elif request_inputs.method == "PUT":
         result = svc.create_by_template(request_inputs.data)
-
         rsp = Response(json.dumps(result, default=str), status=200, content_type="application/json")
     elif request_inputs.method == "DELETE":
         result = svc.delete_by_ref(name)
