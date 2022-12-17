@@ -5,11 +5,39 @@ from columbia_student_resource import ColumbiaStudentResource
 from formula1_resource import Formula1Resource
 from flask_cors import CORS
 import rest_utils
+from middleware import notification
 
 # Create the Flask application object.
 app = Flask(__name__)
 
 CORS(app)
+
+trigger_SNS = {'path': '/api/circuits/', 'method': 'GET'}
+
+
+@app.after_request
+def after_request(response):
+    print("checking after request")
+    print(request.path[:14], request.method)
+    if request.path[:14] == trigger_SNS["path"] and request.method == trigger_SNS["method"]:
+
+        sns = notification.NotificationMiddlewareHandler.get_sns_client()
+        print("Got SNS Client!")
+        tps = notification.NotificationMiddlewareHandler.get_sns_topics()
+        print("SNS Topics = \n", json.dumps(tps, indent=2))
+
+        event = {
+            "URL": request.url,
+            "method": request.method
+        }
+        if request.json:
+            event["new_data"] = request.json
+        notification.NotificationMiddlewareHandler.send_sns_message(
+            "arn:aws:sns:us-east-1:251066837542:MyTopic",
+            event
+        )
+
+    return response
 
 
 @app.get("/api/health")
