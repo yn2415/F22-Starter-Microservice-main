@@ -94,17 +94,43 @@ class Formula1Resource():
 
         return result
 
+    def get_by_template(self, q, limit=None, offset=None):
+        # print(q['field'], q['val'], q['limit'], q['offset'])
+        sql = "SELECT circuitRef, name, location, country FROM microservice1.circuits where "+ q['field'] + " = %s limit " + limit+ " offset " + offset
+        # sql2 = "select * from microservice1.circuits where country='China' limit 2 offset 0"
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        s = cursor.mogrify(sql, (q['val']))
+        print(s)
+        res = cursor.execute(sql, (q['val']))
+        # r = {'data':[], 'links':[]}
+        # r['links'] = {'prev':[], 'cur':[], 'next':[]}
+        if res >0:
+            result = cursor.fetchall()
 
-# if __name__ == "__main__":
-#     svc = Formula1Resource()
-#     q = {
-#         "name": "nyy2",
-#         "location": "Shanghai",
-#         "country": "China",
-#         "lat": 0,
-#         "lng": 0,
-#         "alt": 0,
-#         "url": "qwerty"
-# }
-#     res = svc.update_by_key(2, q)
-#     print(json.dumps(res, default=str))
+        else:
+            result = "Nothing found"
+        # r['data'] = result
+
+        return result
+
+
+
+if __name__ == "__main__":
+    svc = Formula1Resource()
+    q = {
+        "field": "country",
+        "val": "China",
+    }
+
+    q2 = {
+        "name": "nyy2",
+        "location": "Shanghai",
+        "country": "China",
+        "lat": 0,
+        "lng": 0,
+        "alt": 0,
+        "url": "qwerty"
+    }
+    res = svc.get_by_template(q, limit='1', offset='1')
+    print(json.dumps(res, default=str))

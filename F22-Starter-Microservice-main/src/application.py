@@ -12,32 +12,32 @@ app = Flask(__name__)
 
 CORS(app)
 
-trigger_SNS = {'path': '/api/circuits/', 'method': 'GET'}
+trigger_SNS = {'path': '/api/circuits/', 'method': 'PUT'}
 
 
-# @app.after_request
-# def after_request(response):
-#     print("checking after request")
-#     print(request.path[:14], request.method)
-#     if request.path[:14] == trigger_SNS["path"] and request.method == trigger_SNS["method"]:
-#
-#         sns = notification.NotificationMiddlewareHandler.get_sns_client()
-#         print("Got SNS Client!")
-#         tps = notification.NotificationMiddlewareHandler.get_sns_topics()
-#         print("SNS Topics = \n", json.dumps(tps, indent=2))
-#
-#         event = {
-#             "URL": request.url,
-#             "method": request.method
-#         }
-#         # if request.json:
-#         #     event["new_data"] = request.json
-#         notification.NotificationMiddlewareHandler.send_sns_message(
-#             "arn:aws:sns:us-east-1:251066837542:MyTopic",
-#             event
-#         )
-#
-#     return response
+@app.after_request
+def after_request(response):
+    print("checking after request")
+    print(request.path[:14], request.method)
+    if request.path[:14] == trigger_SNS["path"] and request.method == trigger_SNS["method"]:
+
+        sns = notification.NotificationMiddlewareHandler.get_sns_client()
+        print("Got SNS Client!")
+        tps = notification.NotificationMiddlewareHandler.get_sns_topics()
+        print("SNS Topics = \n", json.dumps(tps, indent=2))
+
+        event = {
+            "URL": request.url,
+            "method": request.method
+        }
+        # if request.json:
+        #     event["new_data"] = request.json
+        notification.NotificationMiddlewareHandler.send_sns_message(
+            "arn:aws:sns:us-east-1:251066837542:MyTopic",
+            event
+        )
+
+    return response
 
 
 @app.get("/api/health")
@@ -90,6 +90,7 @@ def get_circuit_by_country(name):
 
     if request_inputs.method == "GET":
         result = svc.get_by_key(name)
+
         if result:
             rsp = Response(json.dumps(result), status=200, content_type="application.json")
         else:
@@ -108,6 +109,23 @@ def get_circuit_by_country(name):
 
     return rsp
 
+
+@app.route("/api/circuits", methods=["GET"])
+def get_circuit_by_template():
+
+    request_inputs = rest_utils.RESTContext(request)
+    svc = Formula1Resource()
+    if request_inputs.method == "GET":
+        result = svc.get_by_template(q=request_inputs.args,
+                                     limit='1',
+                                     offset='1')
+        # result['links']['prev'] = request.path
+        # print(result)
+        res = request_inputs.add_pagination(result)
+        rsp = Response(json.dumps(res), status=200, content_type="application.json")
+    else:
+        rsp = Response("NOT FOUND", status=404, content_type="text/plain")
+    return rsp
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5011)
