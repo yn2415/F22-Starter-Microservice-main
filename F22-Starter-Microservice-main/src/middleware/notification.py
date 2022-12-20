@@ -21,6 +21,9 @@ if response.status_code != 200:
 # AWSAccessKeyId="AKIATU5F75ITJF3KXO5J"
 # AWSSecretKey="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"
 
+AWSAccessKeyId=""
+AWSSecretKey=""
+
 
 class NotificationMiddlewareHandler:
     sns_client = None
