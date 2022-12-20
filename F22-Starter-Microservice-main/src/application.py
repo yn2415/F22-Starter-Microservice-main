@@ -82,7 +82,7 @@ def update_student_address(uni):
     return rsp
 
 
-@app.route("/api/circuits/<name>", methods=["GET", "PUT", "DELETE"])
+@app.route("/api/circuits/<name>", methods=["GET", "PUT", "POST", "DELETE"])
 def get_circuit_by_country(name):
 
     request_inputs = rest_utils.RESTContext(request)
@@ -94,6 +94,9 @@ def get_circuit_by_country(name):
             rsp = Response(json.dumps(result), status=200, content_type="application.json")
         else:
             rsp = Response("NOT FOUND", status=404, content_type="text/plain")
+    elif request_inputs.method == "POST":
+        result = svc.update_by_key(name, request_inputs.data)
+        rsp = Response(json.dumps(result, default=str), status=200, content_type="application/json")
     elif request_inputs.method == "PUT":
         result = svc.create_by_template(request_inputs.data)
         rsp = Response(json.dumps(result, default=str), status=200, content_type="application/json")
@@ -104,7 +107,6 @@ def get_circuit_by_country(name):
         rsp = Response("NOT IMPLEMENTED", status=501, content_type="text/plain")
 
     return rsp
-
 
 
 if __name__ == "__main__":

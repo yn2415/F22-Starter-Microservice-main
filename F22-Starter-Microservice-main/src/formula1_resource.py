@@ -1,5 +1,6 @@
 import pymysql
 import os
+import json
 
 class Formula1Resource():
 
@@ -60,6 +61,26 @@ class Formula1Resource():
 
         return result
 
+    def update_by_key(self, ref, new_resource):
+        sql = "update microservice1.circuits set name=%s, location=%s, country=%s, lat=%s, lng=%s, alt=%s, url=%s where circuitRef=%s"
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        res = cursor.execute(sql, (new_resource['name'],
+                                   new_resource['location'],
+                                   new_resource['country'],
+                                   new_resource['lat'],
+                                   new_resource['lng'],
+                                   new_resource['alt'],
+                                   new_resource['url'],
+                                   ref
+                                   ))
+        if res != 0:
+            result = 'Succeed'
+        else:
+            result = "Noooooo"
+
+        return result
+
     def delete_by_ref(self, ref):
         sql = "delete from microservice1.circuits where circuitRef=%s"
         conn = self._get_connection()
@@ -73,3 +94,17 @@ class Formula1Resource():
 
         return result
 
+
+# if __name__ == "__main__":
+#     svc = Formula1Resource()
+#     q = {
+#         "name": "nyy2",
+#         "location": "Shanghai",
+#         "country": "China",
+#         "lat": 0,
+#         "lng": 0,
+#         "alt": 0,
+#         "url": "qwerty"
+# }
+#     res = svc.update_by_key(2, q)
+#     print(json.dumps(res, default=str))
