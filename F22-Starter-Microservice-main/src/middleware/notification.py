@@ -17,10 +17,9 @@ if response.status_code != 200:
         % (response.status_code, response.text)
     )
 """
-# AWSAccessKeyId="AKIA6ERIBJCKCDMEOO56"
-# AWSSecretKey="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"
-AWSAccessKeyId="AKIATU5F75ITAHJ5QSWC"
-AWSSecretKey="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"
+
+AWSAccessKeyId=""
+AWSSecretKey=""
 
 
 class NotificationMiddlewareHandler:
