@@ -21,8 +21,8 @@ if response.status_code != 200:
 
 
 #my access
-# AWSAccessKeyId=""
-# AWSSecretKey=""
+AWSAccessKeyId=""
+AWSSecretKey=""
 
 
 class NotificationMiddlewareHandler:
