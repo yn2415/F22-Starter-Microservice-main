@@ -18,12 +18,11 @@ if response.status_code != 200:
     )
 """
 
-# AWSAccessKeyId="AKIATU5F75ITCP6HEPTI"
-# AWSSecretKey="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"
+
 
 #my access
-AWSAccessKeyId="AKIAUMF5Z36DBW5NA23V"
-AWSSecretKey="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"
+# AWSAccessKeyId=""
+# AWSSecretKey=""
 
 
 class NotificationMiddlewareHandler:
