@@ -116,21 +116,21 @@ class Formula1Resource():
 
 
 
-if __name__ == "__main__":
-    svc = Formula1Resource()
-    q = {
-        "field": "country",
-        "val": "China",
-    }
-
-    q2 = {
-        "name": "nyy2",
-        "location": "Shanghai",
-        "country": "China",
-        "lat": 0,
-        "lng": 0,
-        "alt": 0,
-        "url": "qwerty"
-    }
-    res = svc.get_by_template(q, limit='1', offset='1')
-    print(json.dumps(res, default=str))
+# if __name__ == "__main__":
+#     svc = Formula1Resource()
+#     q = {
+#         "field": "country",
+#         "val": "China",
+#     }
+#
+#     q2 = {
+#         "name": "nyy2",
+#         "location": "Shanghai",
+#         "country": "China",
+#         "lat": 0,
+#         "lng": 0,
+#         "alt": 0,
+#         "url": "qwerty"
+#     }
+#     res = svc.get_by_template(q, limit='1', offset='1')
+#     print(json.dumps(res, default=str))
