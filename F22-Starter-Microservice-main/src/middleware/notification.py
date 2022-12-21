@@ -18,11 +18,12 @@ if response.status_code != 200:
     )
 """
 
-AWSAccessKeyId="AKIATU5F75ITJF3KXO5J"
-AWSSecretKey="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"
+# AWSAccessKeyId="AKIATU5F75ITCP6HEPTI"
+# AWSSecretKey="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"
 
-# AWSAccessKeyId=""
-# AWSSecretKey=""
+#my access
+AWSAccessKeyId="AKIAUMF5Z36DBW5NA23V"
+AWSSecretKey="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"
 
 
 class NotificationMiddlewareHandler:
@@ -69,6 +70,6 @@ class NotificationMiddlewareHandler:
 #
 #     message = {"cool": "beans"}
 #     NotificationMiddlewareHandler.send_sns_message(
-#         "arn:aws:sns:us-east-1:251066837542:MyTopic",
+#         "arn:aws:sns:us-east-1:301045768070:MyTopic",
 #         message
 #     )

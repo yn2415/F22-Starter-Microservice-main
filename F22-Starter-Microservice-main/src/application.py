@@ -18,7 +18,7 @@ trigger_SNS = {'path': '/api/circuits/', 'method': 'PUT'}
 @app.after_request
 def after_request(response):
     print("checking after request")
-    print(request.path[:14], request.method)
+    print(request.path[:14], request.method, trigger_SNS["method"])
     if request.path[:14] == trigger_SNS["path"] and request.method == trigger_SNS["method"]:
 
         sns = notification.NotificationMiddlewareHandler.get_sns_client()
@@ -33,7 +33,7 @@ def after_request(response):
         # if request.json:
         #     event["new_data"] = request.json
         notification.NotificationMiddlewareHandler.send_sns_message(
-            "arn:aws:sns:us-east-1:251066837542:MyTopic",
+            "arn:aws:sns:us-east-1:301045768070:MyTopic",
             event
         )
 
@@ -117,8 +117,8 @@ def get_circuit_by_template():
     svc = Formula1Resource()
     if request_inputs.method == "GET":
         result = svc.get_by_template(q=request_inputs.args,
-                                     limit='1',
-                                     offset='1')
+                                     limit=request_inputs.limit,
+                                     offset=request_inputs.offset)
         # result['links']['prev'] = request.path
         # print(result)
         res = request_inputs.add_pagination(result)
