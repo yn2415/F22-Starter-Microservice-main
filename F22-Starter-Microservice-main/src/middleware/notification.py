@@ -1,6 +1,7 @@
 import requests
 import json
 import boto3
+import os
 
 
 """
@@ -21,8 +22,8 @@ if response.status_code != 200:
 
 
 #my access
-AWSAccessKeyId=""
-AWSSecretKey=""
+AWSAccessKeyId=os.environ.get("AWSID")
+AWSSecretKey=os.environ.get("AWSKEY")
 
 
 class NotificationMiddlewareHandler:

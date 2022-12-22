@@ -63,12 +63,12 @@ class ColumbiaStudentResource:
         if not res:
             return "Invalid Address"
         # print("res= ", res)
-        sql = "update User_address.columbia_student set address_line1=%s, address_line2=%s, city=%s, state=%s where uni=%s"
+        sql = "update f22_databases.students set address_line1=%s, address_line2=%s, city=%s, state=%s where uni=%s"
         conn = ColumbiaStudentResource._get_connection()
         cur = conn.cursor()
         res = cur.execute(sql, (new_resource['street1'], new_resource['street2'], new_resource['city'], new_resource['state'], uni))
         if res != 0:
-            return 1
+            return "Address is valid! Updated!"
 
 
         return 0

@@ -24,6 +24,8 @@ import requests
 
 from google_login.user import User
 
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 # Create the Flask application object.
 app = Flask(__name__)
 
@@ -47,8 +49,8 @@ def unauthorized():
     return "You must be logged in to access this content.", 403
 
 try:
-    init_db_command()
-    # pass
+    # init_db_command()
+    pass
 except sqlite3.OperationalError:
     # Assume it's already been created
     print('aaaaaaa')
@@ -68,43 +70,43 @@ def load_user(user_id):
 def before_request_func():
     print("before_reqest!!!")
     print("request = ", json.dumps(request.path, indent=2, default=str))
-    if request.path != '/':
-        return
-    if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_pic
-            )
-        )
-    else:
-        return '<a class="button" href="/login">Google Login</a>'
+    if request.path == '/':
 
-# @app.after_request
-# def after_request(response):
-#     print("checking after request")
-#     print(request.path[:14], request.method, trigger_SNS["method"])
-#     if request.path[:14] == trigger_SNS["path"] and request.method == trigger_SNS["method"]:
-#
-#         sns = notification.NotificationMiddlewareHandler.get_sns_client()
-#         print("Got SNS Client!")
-#         tps = notification.NotificationMiddlewareHandler.get_sns_topics()
-#         print("SNS Topics = \n", json.dumps(tps, indent=2))
-#
-#         event = {
-#             "URL": request.url,
-#             "method": request.method
-#         }
-#         # if request.json:
-#         #     event["new_data"] = request.json
-#         notification.NotificationMiddlewareHandler.send_sns_message(
-#             "arn:aws:sns:us-east-1:301045768070:MyTopic",
-#             event
-#         )
-#
-#     return response
+        if current_user.is_authenticated:
+            return (
+                "<p>Hello, {}! You're logged in! Email: {}</p>"
+                "<div><p>Google Profile Picture:</p>"
+                '<img src="{}" alt="Google profile pic"></img></div>'
+                '<a class="button" href="/logout">Logout</a>'.format(
+                    current_user.name, current_user.email, current_user.profile_pic
+                )
+            )
+        else:
+            return '<a class="button" href="/login">Google Login</a>'
+
+@app.after_request
+def after_request(response):
+    print("checking after request")
+    print(request.path[:14], request.method, trigger_SNS["method"])
+    if request.path[:14] == trigger_SNS["path"] and request.method == trigger_SNS["method"]:
+
+        sns = notification.NotificationMiddlewareHandler.get_sns_client()
+        print("Got SNS Client!")
+        tps = notification.NotificationMiddlewareHandler.get_sns_topics()
+        print("SNS Topics = \n", json.dumps(tps, indent=2))
+
+        event = {
+            "URL": request.url,
+            "method": request.method
+        }
+        # if request.json:
+        #     event["new_data"] = request.json
+        notification.NotificationMiddlewareHandler.send_sns_message(
+            "arn:aws:sns:us-east-1:251066837542:MyTopic",
+            event
+        )
+
+    return response
 
 @app.route("/")
 def index():
@@ -128,6 +130,7 @@ def login():
 
     # Use library to construct the request for login and provide
     # scopes that let you retrieve user's profile from Google
+
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=request.base_url + "/callback",
@@ -298,4 +301,5 @@ def get_circuit_by_template():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5011)
+    # app.run(ssl_context="adhoc")
 
