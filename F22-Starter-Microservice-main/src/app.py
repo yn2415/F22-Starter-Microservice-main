@@ -76,8 +76,9 @@ def before_request_func():
             return (
                 "<p>Hello, {}! You're logged in! Email: {}</p>"
                 "<div><p>Google Profile Picture:</p>"
-                '<img src="{}" alt="Google profile pic"></img></div>'
-                '<a class="button" href="/logout">Logout</a>'.format(
+                '<img src="{}" alt="Google profile pic" referrerpolicy="no-referrer"></img></div>'
+                '<a class="button" href="/logout">Logout</a>'
+                '<div><a class="button" href="https://d3qr0yx0wefzty.cloudfront.net/index.html"> Back</a></div>'.format(
                     current_user.name, current_user.email, current_user.profile_pic
                 )
             )
@@ -115,7 +116,8 @@ def index():
             "<p>Hello, {}! You're logged in! Email: {}</p>"
             "<div><p>Google Profile Picture:</p>"
             '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
+            '<a class="button" href="/logout">Logout</a>'
+            .format(
                 current_user.name, current_user.email, current_user.profile_pic
             )
         )
@@ -300,6 +302,6 @@ def get_circuit_by_template():
     return rsp
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5011)
+    app.run(host="0.0.0.0", port=5011, debug = True)
     # app.run(ssl_context="adhoc")
 
