@@ -108,7 +108,7 @@ def after_request(response):
 
     return response
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
     if current_user.is_authenticated:
         return (
